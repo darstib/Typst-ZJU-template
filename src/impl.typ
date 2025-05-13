@@ -1,5 +1,3 @@
-
-
 #let font_serif = (
   "Source Han Serif SC",
   "New Computer Modern",
@@ -70,8 +68,6 @@
   keywords,
   keywords_zh,
 ) = {
-  set par(spacing: 1em)
-
   // --- Title ---
   if article_type == "paper" {
     align(center)[#text(24pt, fill: rgb("004b71"), title, weight: "bold")]
@@ -121,7 +117,7 @@
     parbreak()
   }
 
-  v(8pt) // Original vertical space
+  v(10pt)
 
   // --- Abstract / Table of Contents ---
   set text(
@@ -129,7 +125,7 @@
     font: font_serif, // Base fonts for this section
     lang: language,
   )
-  set par(justify: true) // Justify abstract/ToC text
+  set par(spacing: 1em, justify: true)
 
   if article_type == "paper" {
     if language == "zh" {
@@ -176,13 +172,15 @@
   course: [course name],
   make-venue: make-venue,
   make-title: make-title,
-  columns: 2,
+  pagebreak_after_title: true,
+  columns: 1,
   body,
 ) = {
   set page(
     paper: "a4",
     margin: (top: 1cm, bottom: 1in, x: 1.6cm),
     columns: columns,
+    numbering: "1 / 1",
   )
   set par(justify: true)
   set text(
@@ -214,6 +212,9 @@
     scope: "parent",
     float: true,
   )
+  if pagebreak_after_title {
+    pagebreak()
+  }
 
   show math.equation: set text(font: font_mono)
   show raw: set text(font: font_mono)
