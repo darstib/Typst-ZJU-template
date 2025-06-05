@@ -1,46 +1,4 @@
-#let font_serif = (
-  "Source Han Serif SC",
-  "New Computer Modern",
-  "LXGW WenKai GB Screen",
-  "Noto Serif CJK SC",
-  "Times New Roman",
-  "Georgia",
-  "STSong",
-  "SimSun",
-  "Songti SC",
-  //   "Nimbus Roman No9 L",
-  "AR PL New Sung",
-  "AR PL SungtiL GB",
-  "NSimSun",
-  "TW\-Sung",
-  "WenQuanYi Bitmap Song",
-  "AR PL UMing CN",
-  "AR PL UMing HK",
-  "AR PL UMing TW",
-  "AR PL UMing TW MBE",
-  "PMingLiU",
-  "MingLiU",
-)
-#let font_sans_serif = (
-  "Noto Sans",
-  "Helvetica Neue",
-  "Helvetica",
-  "Nimbus Sans L",
-  "Arial",
-  "Liberation Sans",
-  "PingFang SC",
-  "Hiragino Sans GB",
-  "Noto Sans CJK SC",
-  "Source Han Sans SC",
-  "Source Han Sans CN",
-  "Microsoft YaHei",
-  "Wenquanyi Micro Hei",
-  "WenQuanYi Zen Hei",
-  "ST Heiti",
-  "SimHei",
-  "WenQuanYi Zen Hei Sharp",
-)
-#let font_mono = ("Maple Mono NF", "Consolas", "Monaco", ..font_sans_serif)
+#import "font.typ": font_serif, font_sans_serif, font_mono
 
 #let make-venue(
   course,
@@ -85,8 +43,8 @@
         [
           #text(author.name) #h(1em)
           #if (author.id != "") { text(author.id) } #h(1em)
-          #if (author.institution != "") { text(author.institution) } #h(1em)
-          #if (author.mail != "") { link("mailto:" + author.mail, text(author.mail)) }
+          #if (author.institution != none) { text(author.institution) } #h(1em)
+          #if (author.mail != none) { link("mailto:" + author.mail, text(author.mail)) }
         ]
       } else {
         // More than one author
@@ -99,10 +57,10 @@
             #stack(
               dir: ttb, // Top-to-bottom arrangement of details
               spacing: 0.5em, // Spacing between items in the stack
-              text(author.name, weight: "medium"), // Uses 12pt from set text
-              if author.id != "" { text(10pt, author.id) }, // Smaller for ID
-              text(10pt, author.institution), // Smaller for institution
-              link("mailto:" + author.mail, text(10pt, author.mail)), // Smaller for email
+              text(author.name, weight: "medium"),
+              if author.id != "" { text(10pt, author.id) },
+              if (author.institution != none) { text(author.institution) },
+              if (author.mail != none) { link("mailto:" + author.mail, text(author.mail)) },
             )
           ])
         )
@@ -132,7 +90,7 @@
       // Local scope for Chinese abstract settings
       {
         align(center)[#heading(outlined: false, bookmarked: false, numbering: none)[*摘要*]]
-        text(abstract_zh)
+        text[#h(2em) #abstract_zh]
         v(3pt)
         [*关键词：* #keywords_zh.join(text("； "))]
       }
@@ -146,7 +104,7 @@
     // Table of Contents
     if language == "zh" {
       {
-        set text(font: (..font_serif, ..font_sans_serif), lang: "zh") // Ensure correct font for "目录"
+        set text(font: font_serif, lang: "zh") // Ensure correct font for "目录"
         outline(depth: 3, indent: 1.2em, title: "目录")
       }
     } else {
@@ -182,19 +140,25 @@
     columns: columns,
     numbering: "1 / 1",
   )
-  set par(justify: true)
+
   set text(
     10pt,
     font: font_serif,
     lang: language,
   )
 
-  set list(indent: 8pt)
-  set heading(numbering: "I.")
+  set heading(numbering: "I.1.")
   show heading: set text(size: 11pt)
   show heading.where(level: 1): set text(fill: rgb("004b71"), size: 12pt)
   show heading: set block(below: 8pt)
   show heading.where(level: 1): set block(below: 12pt)
+  show heading: it => {
+    // 为了中文段落能够顺利缩进两行
+    // https://github.com/shuosc/SHU-Bachelor-Thesis-Typst/issues/12#issuecomment-1506872937
+    it
+    v(-1.0em)
+    par(leading: 0em)[#text(size: 0em)[#h(0em)]]
+  }
 
   place(make-venue(course), top, scope: "parent", float: true)
   place(
@@ -216,29 +180,40 @@
     pagebreak()
   }
 
-  show math.equation: set text(font: font_mono)
+  show math.equation: set text(font: "New Computer Modern Math")
   show raw: set text(font: font_mono)
   show raw.where(block: false): box.with(
     fill: luma(243),
-    inset: (x: 3pt, y: 0pt),
-    outset: (y: 3pt),
+    inset: (x: 1pt, y: 0pt),
+    outset: (y: 2pt),
     radius: 2pt,
   )
+  // use codex instead
+  // show raw.where(block: true): block.with(
+  //   stroke: luma(88.49%),
+  //   inset: 5pt,
+  //   radius: 2pt,
+  // )
+  set par(justify: true, first-line-indent: if language == "zh" { 2em } else { 0pt })
   show link: underline
-
-  show raw.where(block: true): block.with(
-    stroke: luma(200),
-    inset: 3pt,
-    radius: 4pt,
+  set list(
+    indent: 1em,
+    marker: (
+      $bullet$,
+      $triangle.filled.small.r$,
+      $diamond.filled.small$,
+      $square.filled.small$,
+      $star.filled$,
+    ),
   )
 
   show figure: set text(8pt)
   show figure: align.with(center)
-  show figure.caption: pad.with(x: 10%)
+  show figure.caption: pad.with(x: 5%)
   show figure.where(kind: table): it => {
     stack(
       dir: ttb,
-      spacing: 0.65em, // Adjust spacing as needed
+      spacing: 0.75em, // Adjust spacing as needed
       align(center, it.caption), // Center the caption
       align(center, it.body), // Center the table body
     )

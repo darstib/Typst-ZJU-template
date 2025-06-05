@@ -2,6 +2,10 @@
 
 typst template for ZJU, modify from [graceful-genetics](https://github.com/jamesrswift/graceful-genetics).
 
+> Examples and details are coming soon ...
+
+## Get started
+
 ```typ
 #import "../src/lib.typ": template
 
