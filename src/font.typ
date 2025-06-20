@@ -43,3 +43,7 @@
   "WenQuanYi Zen Hei Sharp",
 )
 #let font_mono = ("Maple Mono NF", "Consolas", "Monaco", ..font_sans_serif)
+#let font_math = (
+  "New Computer Modern Math",
+  "Cambria Math",
+)

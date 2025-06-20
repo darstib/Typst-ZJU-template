@@ -1,26 +1,70 @@
 # Typst-ZJU-template
 
-typst template for ZJU, modify from [graceful-genetics](https://github.com/jamesrswift/graceful-genetics).
+这个仓库是修改自 [graceful-genetics](https://github.com/jamesrswift/graceful-genetics)、面向浙江大学[^1] 的课程论文/报告的 typst 模板，灵感来自 [@ArriettyCh](https://github.com/ArriettyCh)。
 
-> Examples and details are coming soon ...
+[^1]: 其实改改就能用在其他学校和其他场景。
 
-## Get started
+> 如果更喜欢传统的纯黑白的报告，可以参考 [ZJU-Project-Report-Template](https://github.com/memset0/ZJU-Project-Report-Template) 。
 
-```typ
-#import "../src/lib.typ": template
+## 模板介绍
+
+在 `example/*.typ` 中给出了常见的两种使用场景：课程论文和实验报告。他们的导出 PDF 存放在 `docs/*.pdf` 中。
+
+### paper-demo
+
+在 paper-demo 中展示了中文、标题居中、有摘要、双栏下的效果，以及其他常用功能的处理；
+
+![examples/img/paper-demo.png|600](examples/img/paper-demo.png)
+
+### report-demo
+
+在 report-demo 中展示了英文、标题左对齐、有目录、单栏下的效果，以及 `src/util.typ` 中实现的额外功能。
+
+![examples/img/report-demo.png|600](examples/img/report-demo.png)
+
+对于其他推荐的小组件，参考 [Typst_begin - 推荐资料](https://darstib.github.io/blog/tutorial/begin/Typst_begin/#%E6%8E%A8%E8%8D%90%E8%B5%84%E6%96%99) 。
+
+## 开始使用
+
+从 lib.typ 中导入 `template`，然后使用 `template.with(...)` 来设置模板的各个部分；默认内容如下（这些内容与在文章中的【自上而下】顺序一致）：
+
+```typst
+#import "../src/lib.typ": *
 
 #show: template.with(
-  article_type: "report",
-  title: [Lab title],
-  course: text(size: font_size)[course name],
+  language: "en", // 语言，默认 "en"，可选 "zh"（中文）
+  course: [course name], // 课程名称，即第一个页面右上角的内容，可能需要使用 `#text(size: xxpt)[course name]` 来调整大小
+  title: [Article title], // 文章标题
+  title_align: "center", // 标题对齐方式，"center" 或 "left"，默认居中
+  date: [], // 日期，默认无，datetime.today() 为当前日期
   authors: (
     (
-      name: "Darstib",
-      id: "xxxxxxxxxx",
-      institution: "xxxx",
-      mail: "darstib@zju.edu.cn",
-    ),
-  ),
-  columns: 2,
+      name: "",
+      id: "",
+      institution: "",
+      mail: "",
+    ), // 作者信息，name 为姓名，id 为学号，institution 为学院/研究所，mail 为邮箱
+  ), // 可以设置多组信息；一组则横向排列，多组则纵向排列
+  abstract_zh: [], // 中文摘要，默认为空
+  keywords_zh: (), // 中文关键词，默认为空
+  title_en: [], // 英文标题（如果中文论文需要英文标题），默认为空
+  abstract: [], // 英文摘要，默认为空
+  keywords: (), // 英文关键词，默认为空
+  pagebreak_after_title: false, // 摘要后是否分页，默认 false
+  include_toc: true, // 是否包含目录，默认为 true
+  pagebreak_after_toc: true, // 目录后（确切说是正文内容前）是否分页，默认 true
+  columns: 1, // 列数，默认 1，一般为 1 或 2
 )
+
+// 中英文混用问题
+#let bib_file = "refs.bib"
+#if (bib_file != none) {
+  if (language == "zh") {
+    bilingual-bibliography(bibliography: bibliography.with(bib_file))
+  } else {
+    bibliography(bib_file)
+  }
+}
 ```
+
+一般来说，我们必须要修改的是 `course`、`title`、`authors`，其余部分按照解释选择是否设置即可。
