@@ -6,9 +6,22 @@
 
 > 如果更喜欢传统的纯黑白的报告，可以参考 [ZJU-Project-Report-Template](https://github.com/memset0/ZJU-Project-Report-Template) 。
 
+[toc]
+
 ## 模板介绍
 
 在 `example/*.typ` 中给出了常见的两种使用场景：课程论文和实验报告。他们的导出 PDF 存放在 `docs/*.pdf` 中。
+
+但是实际上支持更加丰富的自由组合：
+
+- 语言：中文（zh）或英文（en）；
+- 作者：单人或多人
+- 标题对齐方式：居中（center）或左对齐（left）；
+- 摘要：中英文摘要；
+- 关键词：中英文关键词；
+- 目录：是否包含目录；
+- 列数：单栏（1）或双栏（2）；
+- 其他：如日期、课程名称等。
 
 ### paper-demo
 
